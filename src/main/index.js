@@ -1,6 +1,10 @@
 'use strict'
 
-import { app, BrowserWindow } from 'electron'
+import {
+  app,
+  BrowserWindow,
+  dialog
+} from 'electron'
 // Local
 import './localBridge'
 import './localSingleBridge'
@@ -92,4 +96,13 @@ autoUpdater.setFeedURL({
 autoUpdater.on('update-available', function (info) {
   console.log(9999999999, info)
   console.log('Update available.')
+  dialog.showMessageBox({
+    type: 'warning',
+    title: 'Warning Box',
+    message: `呃呃呃呃呃呃呃`,
+    detail: `${info}`,
+    buttons: ['cancel', 'ok'],
+    defaultId: 1,
+    cancelId: 0
+  })
 })
