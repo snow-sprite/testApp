@@ -91,7 +91,7 @@ function updateHandle () {
     updateNotAva: '已经是最新版本'
   }
 
-  autoUpdater.setFeedURL('http://27.128.197.210/download/')
+  autoUpdater.setFeedURL('http://localhost/download/')
   autoUpdater.on('error', _ => {
     sendUpdateMessage(message.error)
   })
