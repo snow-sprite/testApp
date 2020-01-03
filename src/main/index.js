@@ -90,6 +90,6 @@ autoUpdater.setFeedURL({
 })
 
 autoUpdater.on('update-available', function (info) {
-  console.log(1, info)
+  console.log(9999999999, info)
   console.log('Update available.')
 })
