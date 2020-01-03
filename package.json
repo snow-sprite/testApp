@@ -1,6 +1,6 @@
 {
   "name": "compress_your_images",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "author": {
     "name": "zhiozhou@Cid",
     "email": "959418392@qq.com",
@@ -47,11 +47,11 @@
     "publish": [
       {
         "provider": "generic",
-        "url": ""
+        "url": "http://27.128.197.210/download/"
       }
     ],
     "nsis": {
-      "oneClick": true,
+      "oneClick": false,
       "perMachine": true,
       "allowElevation": true,
       "allowToChangeInstallationDirectory": true,

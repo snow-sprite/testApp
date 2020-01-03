@@ -9,7 +9,7 @@ import {
 import './localBridge'
 import './localSingleBridge'
 import { autoUpdater } from 'electron-updater'
-import updateUrl from '../config/index'
+// import updateUrl from '../config/index'
 
 // Online
 import './onlineBridge'
@@ -91,7 +91,7 @@ function updateHandle () {
     updateNotAva: '已经是最新版本'
   }
 
-  autoUpdater.setFeedURL(updateUrl)
+  autoUpdater.setFeedURL('http://27.128.197.210/download/')
   autoUpdater.on('error', _ => {
     sendUpdateMessage(message.error)
   })
