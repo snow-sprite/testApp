@@ -47,7 +47,7 @@
     "publish": [
       {
         "provider": "generic",
-        "url": "http://27.128.197.210/download/"
+        "url": "http://localhost/download/"
       }
     ],
     "nsis": {
