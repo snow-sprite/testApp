@@ -55,6 +55,7 @@
     name: 'CompressYourImages',
     data () {
       return {
+        tip: '', // 提示信息
         activeNavInd: 0, // 激活的nav
         navList: [{
           name: 'Local'
@@ -84,6 +85,12 @@
       this.getCompressedCount()
       // 设置apicount值
       this.listenCount()
+
+      // 监听自动更新
+      this.listenAutoUpdate()
+    },
+    beforeDestroy () {
+      this.$electron.ipcRenderer.removeAll(['message', 'downloadProgress', 'isUpdateNow'])
     },
     watch: {
       count (newV, oldV) {
@@ -157,6 +164,21 @@
           if (data) {
             this.$store.dispatch('getCompressedCount', this.globalKey)
           }
+        })
+      },
+      listenAutoUpdate () {
+        this.$electron.ipcRenderer.on('message', (event, content) => {
+          console.log(1, arguments)
+          this.tips = content
+        })
+
+        this.$electron.ipcRenderer.on('downloadProgress', (event, progressObj) => {
+          console.log('progress', progressObj)
+          this.downloadPercent = progressObj.percent || 0
+        })
+
+        this.$electron.ipcRenderer.on('isUpdateNow', () => {
+          this.$electron.ipcRenderer.send('isUpdateNow')
         })
       }
     }

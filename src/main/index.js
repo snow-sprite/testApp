@@ -3,11 +3,13 @@
 import {
   app,
   BrowserWindow,
-  dialog
+  ipcMain
 } from 'electron'
 // Local
 import './localBridge'
 import './localSingleBridge'
+import { autoUpdater } from 'electron-updater'
+import updateUrl from '../config/index'
 
 // Online
 import './onlineBridge'
@@ -20,8 +22,6 @@ import util from './lib'
  * support auto updating. Code Signing with a valid certificate is required.
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-electron-builder.html#auto-updating
  */
-
-import { autoUpdater } from 'electron-updater'
 
 /**
  * Set `__static` path to static files in production
@@ -61,6 +61,9 @@ function createWindow () {
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
   })
+
+  // 尝试更新
+  updateHandle()
 }
 
 app.on('ready', () => {
@@ -79,30 +82,48 @@ app.on('activate', () => {
     createWindow()
   }
 })
-/*
-autoUpdater.on('update-downloaded', () => {
-  autoUpdater.quitAndInstall()
-})
 
-app.on('ready', () => {
-  if (process.env.NODE_ENV === 'production') autoUpdater.checkForUpdates()
-})
-*/
-autoUpdater.setFeedURL({
-  provider: 'github',
-  url: 'https://github.com/snow-sprite/CompressApp'
-})
+function updateHandle () {
+  let message = {
+    error: '检查更新出错',
+    checking: '正在检查更新..',
+    updateAva: '检测到新版本，正在下载...',
+    updateNotAva: '已经是最新版本'
+  }
 
-autoUpdater.on('update-available', function (info) {
-  console.log(9999999999, info)
-  console.log('Update available.')
-  dialog.showMessageBox({
-    type: 'warning',
-    title: 'Warning Box',
-    message: `呃呃呃呃呃呃呃`,
-    detail: `${info}`,
-    buttons: ['cancel', 'ok'],
-    defaultId: 1,
-    cancelId: 0
+  autoUpdater.setFeedURL(updateUrl)
+  autoUpdater.on('error', _ => {
+    sendUpdateMessage(message.error)
   })
-})
+
+  autoUpdater.on('checking-for-update', _ => {
+    sendUpdateMessage(message.checking)
+  })
+
+  autoUpdater.on('update-not-available', _ => {
+    sendUpdateMessage(message.updateNotAva)
+  })
+
+  autoUpdater.on('download-progress', progressObj => {
+    mainWindow.webContents.send('downloadProgress', progressObj)
+  })
+
+  autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName, relaseData, updateUrl, quitAndUpdate) => {
+    ipcMain.on('isUpdateNow', (e, arg) => {
+      console.log(arguments)
+      console.log('开始更新')
+      autoUpdater.quitAndInstall()
+    })
+
+    mainWindow.webContents.send('isUpdateNow')
+  })
+
+  ipcMain.on('checkForUpdate', _ => {
+    autoUpdater.checkForUpdates()
+  })
+}
+
+// 传递提示信息
+function sendUpdateMessage (content) {
+  mainWindow.webContents.send('message', content)
+}

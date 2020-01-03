@@ -36,12 +36,6 @@ function createTray () {
       shell.openExternal(BugsIssues)
     }
   }, {
-    label: 'test',
-    type: 'normal',
-    click: () => {
-      shell.openExternal('https://www.weibo.com/')
-    }
-  }, {
     label: 'Quit',
     role: 'quit'
   }])
